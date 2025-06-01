@@ -37,57 +37,56 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .accordion-item {
-    /* border: 1px solid var(--panel-border-blur, rgba(80, 80, 80, 0.4)); */ /* Removed default border, rely on title-box */
-    margin: 8px 0; /* Vertical margin for separation */
-    position: relative;
-    background-color: var(--accordion-item-bg, rgba(60, 60, 60, 0.5)); /* Slightly different from panel for visual hierarchy */
-    border-radius: 8px; /* Rounded corners for the item */
-    overflow: hidden; /* Ensure content clips to border-radius */
-}
-
-#min-button {
-    float: right;
-    padding-right: 5px; /* Ensure icon isn't flush with edge */
-    color: var(--text-color-secondary, #B0B0B0);
+    margin: 10px 0;
+    background-color: var(--accordion-item-bg-blur-dark, rgba(45, 45, 45, 0.65)); /* Darker semi-transparent */
+    border: 1px solid var(--accordion-border-blur-dark, rgba(255, 255, 255, 0.1)); /* Subtle light border */
+    border-radius: 8px;
+    overflow: hidden;
+    backdrop-filter: blur(8px) saturate(160%); /* Adjusted blur for accordion */
+    -webkit-backdrop-filter: blur(8px) saturate(160%);
 }
 
 #title-box {
-    /* background-color: var(--btn-bg); */ /* Removed, using new style below */
-    background-color: var(--accordion-title-bg, transparent); /* Transparent to show item bg, or a very subtle distinct color */
-    color: var(--text-color-primary, #E0E0E0);
+    background-color: var(--accordion-title-bg-blur-dark, rgba(55, 55, 55, 0.7)); /* Darker title background */
+    color: var(--accordion-title-text-dark, #f0f0f0); /* Light title text */
     text-align: left;
-    padding: 12px 15px; /* Increased padding */
+    padding: 10px 15px;
     margin: 0px;
-    font-weight: 500; /* Medium weight for title */
-    border-bottom: 1px solid var(--accordion-border, rgba(80, 80, 80, 0.3)); /* Subtle separator if content shown */
+    font-weight: 500;
+    border-bottom: 1px solid var(--accordion-border-blur-dark, rgba(255, 255, 255, 0.1));
     transition: background-color 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.accordion-item:last-child #title-box {
-    border-bottom: none; /* No border for the last item if it's closed */
+.accordion-item.is_open #title-box {
+    border-bottom: 1px solid var(--accordion-border-blur-dark, rgba(255, 255, 255, 0.1));
 }
 
-.accordion-item #title-box:hover {
+.accordion-item:not(.is_open) #title-box {
+    border-bottom: none;
+}
+
+#title-box:hover {
     cursor: pointer;
-    background-color: var(--accordion-title-hover, rgba(255, 255, 255, 0.05)); /* Subtle hover */
+    background-color: var(--accordion-title-hover-blur-dark, rgba(70, 70, 70, 0.75));
 }
 
-/* #title-box:active { */ /* Active state might be too much, hover is enough */
-    /* background-color: var(--btn-active); */
-/* } */
+#min-button {
+    color: var(--accordion-icon-color-dark, #d0d0d0); /* Light icon color */
+    font-size: 0.9rem;
+}
 
 #content {
-    /* border-top: 1px solid rgb(126, 126, 126); */ /* Handled by title-box border if needed */
-    padding: 15px; /* Padding for the content area */
-    background-color: var(--accordion-content-bg, rgba(30,30,30,0.3)); /* Slightly darker/more transparent for content */
+    padding: 15px 18px;
+    background-color: transparent; /* Content shows accordion-item background */
+    /* Text color within slot content should be light or set by child components */
 }
 
-.accordion-item[open] #title-box {
-    /* Style for title when open, if needed */
-}
-
-.accordion-item:not(:last-child) {
-    margin-bottom: 10px; /* Add more space between accordion items */
+/* Optional: if you want to ensure the last item doesn't have a double border with the panel footer */
+.accordion-item:last-child {
+    /* margin-bottom: 0; */ /* If needed */
 }
 
 </style>

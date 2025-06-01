@@ -1,11 +1,12 @@
 <template>
-    <div id='settings-panel' :class="{ 'is-hidden': hide_settings }">
+    <div id='settings-panel'>
         <div id='header'>
             <button id='hide-button' @click="hide_settings = !hide_settings" :title="hide_settings ? 'Show settings panel (V)' : 'Hide settings panel (V)'"><i class="fa" :class="hide_settings ? 'fa-eye' : 'fa-eye-slash'"></i></button>
-            Neural Patterns
+            <div class="header-title">Neural Patterns</div>
+            <div class="header-placeholder"></div>
         </div>
 
-        <div id='hotbar' :class="{ 'is-active': !hide_settings}">
+        <div id='hotbar' :class="{ 'is-active': !hide_settings}" v-show="!hide_settings">
             <button id='play-pause-btn' v-on:click="togglePlay()" :title="is_playing ? 'Pause simulation (Space)' : 'Play simulation (Space)'"><i class='fa' :class='is_playing ? "fa-pause" : "fa-play"'></i></button>
             <button id='step-btn' v-on:click="stepOnce()" title='Advance simulation by one step (A)'><i class='fa fa-step-forward'></i></button>
             <button id='randomize-all-btn' v-on:click="randomizeAll()" title="Randomize all settings (R). Uses options from 'Randomization Settings'."><i class='fa fa-random'></i> Randomize</button>
@@ -79,13 +80,26 @@ export default {
     data() {
         return {
             is_playing: Controller.playing,
-            hide_settings: true,
+            hide_settings: false,
         }
     },
     mounted(){
         Controller.settingsVue = this;
+        this.adjustHeaderPlaceholder(); // Call on mount
+    },
+    updated() {
+        this.adjustHeaderPlaceholder(); // Call on updates (e.g. when hide_settings changes)
     },
     methods:{
+        adjustHeaderPlaceholder() {
+            this.$nextTick(() => { // Ensure DOM is updated
+                const button = this.$el.querySelector('#hide-button');
+                const placeholder = this.$el.querySelector('.header-placeholder');
+                if (button && placeholder) {
+                    placeholder.style.width = button.offsetWidth + 'px';
+                }
+            });
+        },
         togglePlay(){
             Controller.togglePlay();
             this.is_playing = Controller.playing;
@@ -176,146 +190,113 @@ export default {
     position: fixed;
     z-index: 100;
     width: 100%;
-    max-width: 360px; /* Adjusted max-width */
+    max-width: 400px;
     margin: 20px;
-    color: var(--text-color-primary, #E0E0E0); /* Brighter text for better contrast on blur */
-    background-color: var(--panel-bg-blur, rgba(45, 45, 45, 0.65)); /* Dark, semi-transparent */
-    backdrop-filter: blur(18px) saturate(180%);
-    -webkit-backdrop-filter: blur(18px) saturate(180%);
-    border: 1px solid var(--panel-border-blur, rgba(80, 80, 80, 0.4));
-    border-radius: 12px; /* Softer, more Apple-like rounded corners */
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-    overflow: hidden; /* Needed for border-radius on children and for smooth transition */
+    color: var(--text-color-primary-dark, #e0e0e0); /* Light text for dark panel */
+    background-color: var(--panel-bg-blur-dark, rgba(30, 30, 30, 0.75)); /* Dark semi-transparent */
+    backdrop-filter: blur(15px) saturate(180%); /* Enhanced blur */
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    border: 1px solid var(--panel-border-blur-dark, rgba(255, 255, 255, 0.15)); /* Subtle light border */
+    border-radius: 12px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); /* Adjusted shadow for dark theme */
     transition: transform 0.3s ease-out, opacity 0.3s ease-out;
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 40px); /* Prevent panel from being taller than viewport */
+    max-height: calc(100vh - 40px);
 }
 
+/*
 #settings-panel.is-hidden {
     transform: translateY(-20px);
     opacity: 0;
-    pointer-events: none; /* Allow clicks to pass through when hidden */
+    /* pointer-events: none; */ /* Allow clicks on the fixed hotbar */
     /* visibility: hidden; */ /* Can cause layout shifts, opacity/transform preferred */
+/* }
+*/
+
+
+#header {
+    padding: 8px 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--header-text-dark, #f0f0f0); /* Light header text */
+    background-color: var(--header-bg-blur-dark, rgba(40, 40, 40, 0.7)); /* Darker semi-transparent header */
+    border-bottom: 1px solid var(--panel-border-blur-dark, rgba(255, 255, 255, 0.1));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
 }
 
+.header-title {
+    flex-grow: 1;
+    text-align: center;
+    color: var(--text-color-primary-dark, #e0e0e0); /* Light title text */
+}
+
+#header #hide-button {
+    background-color: transparent;
+    color: var(--text-color-secondary-dark, #b0b0b0); /* Light icon color */
+    border: none;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.header-placeholder {
+    visibility: hidden;
+    flex-shrink: 0;
+}
+
+#header #hide-button:hover {
+    color: #ffffff; /* Brighter on hover */
+    background-color: rgba(255,255,255,0.1);
+}
 
 #hotbar {
     display: flex;
-    justify-content: space-around; /* Distribute buttons evenly */
+    justify-content: space-around;
     align-items: center;
-    padding: 8px 10px;
-    background-color: var(--hotbar-bg-blur, rgba(35, 35, 35, 0.75));
-    backdrop-filter: blur(12px) saturate(150%);
-    -webkit-backdrop-filter: blur(12px) saturate(150%);
-    border-top: 1px solid var(--panel-border-blur, rgba(70, 70, 70, 0.3));
-    /* border-bottom: 1px solid var(--panel-border-blur, rgba(70, 70, 70, 0.3)); */
-    /* Removed bottom border for seamless look when panel open */
-    position: fixed; /* Make hotbar fixed at the top of the viewport within settings panel's influence */
-    bottom: 20px; /* Position it from the bottom */
-    left: 20px;
-    width: 360px; /* Match panel width */
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-    z-index: 101; /* Above settings panel when settings are hidden */
-    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-}
-
-/* When settings panel is SHOWN, hotbar is integrated and not fixed */
-#settings-panel:not(.is-hidden) #hotbar {
-    position: relative; /* Revert to normal flow within the panel */
-    bottom: auto;
-    left: auto;
-    width: auto; /* Let it take the panel's width */
-    border-radius: 0; /* No specific radius, it's part of the panel now */
-    box-shadow: none; /* No separate shadow */
-    border-top: none; /* No top border if it's the first visible element */
-    border-bottom: 1px solid var(--panel-border-blur, rgba(70, 70, 70, 0.3)); /* Line to separate from accordion content */
-    margin: 0; /* Remove fixed positioning margins */
-    padding: 10px; /* Standard padding */
-}
-
-
-#settings-panel.is-hidden + #hotbar {
-    /* This style might not be necessary if hotbar is always visible or part of settings-panel */
-    /* Styles for hotbar when settings are hidden, if it were a separate always-visible element */
+    padding: 6px 8px;
+    background-color: var(--hotbar-bg-blur-dark, rgba(35, 35, 35, 0.65)); /* Dark semi-transparent hotbar */
+    border-bottom: 1px solid var(--panel-border-blur-dark, rgba(255, 255, 255, 0.1));
 }
 
 #hotbar button {
-    background-color: transparent; /* Make hotbar buttons more subtle */
-    border: none;
-    color: var(--text-color-secondary, #B0B0B0);
-    padding: 6px 10px;
-    font-size: 13px;
-    border-radius: 5px;
+    padding: 5px 8px;
+    font-size: 0.8rem;
+    background-color: rgba(255,255,255, 0.1); /* Light, semi-transparent buttons on dark bg */
+    color: #e0e0e0; /* Light text for buttons */
+    border: 1px solid rgba(255,255,255,0.2);
 }
-
-#hotbar button .fa {
-    margin-right: 4px;
-}
-
 #hotbar button:hover {
-    background-color: var(--btn-hover-subtle, rgba(255,255,255,0.1));
-    color: var(--text-color-primary, #E0E0E0);
-}
-#hotbar button:active {
-    background-color: var(--btn-active-subtle, rgba(255,255,255,0.05));
+    background-color: rgba(255,255,255, 0.2);
+    border-color: rgba(255,255,255,0.3);
 }
 
-/* Specific for the main action buttons if they remain in hotbar and need emphasis */
-#hotbar #randomize-all-btn, #hotbar #mutate-btn, #hotbar #reset-defaults-btn, #hotbar #clear-btn {
-    /* background-color: var(--btn-bg, rgba(80, 80, 80, 0.7)); */ /* Keep them distinct */
-    /* color: var(--btn-text, white); */
-    /* border: 1px solid var(--btn-border, rgba(100, 100, 100, 0.5)); */
-    /* Using transparent style like other hotbar buttons for consistency now */
+#hotbar button i.fa {
+    margin-right: 5px; /* Space between icon and text if any */
 }
 
+/* Ensure the hide button in the hotbar (if it's different from the header one) is styled */
 #hotbar #hide-button-inline {
-    /* margin-left: auto; */ /* Pushes it to the right */
+    /* Similar to header hide button or global button style */
+    /* This might be redundant if the main header button is always visible */
 }
 
-
-#header{
-    width:100%;
-    padding: 12px 15px;
-    font-size: 1.1em;
-    font-weight: 500; /* Slightly bolder header text */
-    text-align: center; /* Center title */
-    border-bottom: 1px solid var(--panel-border-blur, rgba(70,70,70,0.3));
-    /* background-color: rgba(0,0,0,0.1); */ /* Subtle header background if needed */
-    position: relative; /* For positioning the hide button */
-}
-
-#hide-button{
-    position: absolute; /* Position relative to header */
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    color: var(--text-color-secondary, #B0B0B0);
-    font-size: 18px;
-    padding: 5px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-#hide-button:hover{
-    color: var(--text-color-primary, #E0E0E0);
-    background-color: var(--btn-hover-subtle, rgba(255,255,255,0.1));
-}
-
-#main-content{
-    width:100%;
-    overflow-y: auto; /* Allow content to scroll */
-    padding: 0px 15px 15px 15px; /* Padding for accordion items */
-    flex-grow: 1; /* Takes up available space */
+#main-content {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 10px;
+    background-color: transparent; /* Content background should be transparent to see panel bg */
 }
 
 #footer {
     padding: 10px 15px;
-    border-top: 1px solid var(--panel-border-blur, rgba(70,70,70,0.3));
-    /* background-color: rgba(0,0,0,0.1); */ /* Subtle footer background if needed */
-    text-align: center; /* Center button group */
+    background-color: var(--footer-bg-blur, rgba(255, 255, 255, 0.6)); /* Semi-transparent footer */
+    border-top: 1px solid var(--panel-border-blur, rgba(255, 255, 255, 0.25));
+    border-bottom-left-radius: 12px; /* Match panel radius */
+    border-bottom-right-radius: 12px; /* Match panel radius */
 }
 
 #footer .button-group {

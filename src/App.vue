@@ -60,16 +60,16 @@ export default {
 <style>
 
 @import './assets/css-vars.css';
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 @import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css';
 @import './assets/glsl-theme.css';
 
 #app {
-	font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	text-align: center;
-	color: #2c3e50;
+	color: #e0e0e0;
 	margin: 0px;
 	padding: 0px;
 }
@@ -80,7 +80,7 @@ html, body{
 	border: none;
 	margin: 0px;
 	padding: 0px;
-	background-color: var(--bg-main, black);
+	background-color: var(--bg-main-dark, #121212);
 }
 
 body{
@@ -89,29 +89,32 @@ body{
 }
 
 button {
-	font-size: 14px;
-	padding: 8px 15px;
-	background-color: var(--btn-bg, rgba(80, 80, 80, 0.7));
-	color: var(--btn-text, white);
-	border: 1px solid var(--btn-border, rgba(100, 100, 100, 0.5));
-	border-radius: 6px;
+	font-size: 1rem;
+	padding: 10px 20px;
+	background-color: var(--btn-bg-dark, rgba(50, 50, 50, 0.6));
+	color: var(--btn-text-dark, #e0e0e0);
+	border: 1px solid var(--btn-border-dark, rgba(255, 255, 255, 0.2));
+	border-radius: 0.3rem;
 	cursor: pointer;
-	transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+	transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-color 0.15s ease-in-out;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 button:hover {
-	background-color: var(--btn-hover, rgba(95, 95, 95, 0.8));
-	border-color: var(--btn-hover-border, rgba(120, 120, 120, 0.7));
+	background-color: var(--btn-hover-dark, rgba(70, 70, 70, 0.7));
+	border-color: var(--btn-hover-border-dark, rgba(255, 255, 255, 0.3));
+	box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
 button:active {
-	background-color: var(--btn-active, rgba(70, 70, 70, 0.9));
-	border-style: solid;
-	transform: translateY(1px) scale(0.98);
+	background-color: var(--btn-active-dark, rgba(40, 40, 40, 0.8));
+	transform: translateY(1px);
+	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
 label {
-	font-size: 15px;
+	font-size: 0.9rem;
+	color: #b0b0b0;
 }
 
 .noselect {
@@ -129,25 +132,29 @@ i {
 }
 
 a {
-	color: rgb(80, 80, 255);
+	color: #87bfff;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
 }
 a:visited {
-	color: rgb(216, 116, 255);
+	color: #c1a7ff;
 }
 
 select {
-    color: var(--text-color, white);
-    background-color: var(--in-bg, rgba(50, 50, 50, 0.7));
-    border: 1px solid var(--in-border, rgba(80, 80, 80, 0.5));
-    padding: 8px 12px;
-    border-radius: 6px;
+    color: var(--text-color-dark, #e0e0e0);
+    background-color: var(--in-bg-dark, rgba(50, 50, 50, 0.7));
+    border: 1px solid var(--in-border-dark, rgba(255,255,255,0.2));
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23FFFFFF%22%2F%3E%3C%2Fsvg%3E');
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23e0e0e0%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M2%205l6%206%206-6z%22/%3E%3C/svg%3E');
     background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
+    background-position: right 0.75rem center;
+    background-size: 12px 12px;
 }
 
 </style>

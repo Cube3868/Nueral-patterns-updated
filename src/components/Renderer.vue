@@ -138,16 +138,24 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#canvasContainer, canvas {
+#canvasContainer {
 	position: absolute;
-	border: none;
-	padding: 0px;
-	/* margin: 0px; */
-	/* margin: auto;
-	left: 0;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	z-index: 0; */
+	top: 0; /* Explicitly position at top */
+	left: 0; /* Explicitly position at left */
+	width: 100vw; /* Cover viewport width */
+	height: 100vh; /* Cover viewport height */
+	z-index: 1; /* Behind settings panel */
+	overflow: hidden; /* Clip overflowing children (like scaled canvas) */
+	border: none; /* Retain original style */
+	padding: 0px; /* Retain original style */
+}
+
+#renderCanvas { /* Style the canvas element itself */
+	position: absolute; /* Position within its container */
+	top: 0; /* Align to top of container */
+	left: 0; /* Align to left of container */
+	width: 100%; /* Fill container width */
+	height: 100%; /* Fill container height */
+	/* The transform and image-rendering styles are applied by JavaScript */
 }
 </style>
