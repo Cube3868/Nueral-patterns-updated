@@ -4,10 +4,10 @@
 			viewportMargin: Infinity,
 			theme: 'glsl',
 			mode: 'glsl',
-		}"></codemirror>
+		}" title="GLSL code for the activation function. Defines how the sum of kernel-weighted neighbors translates to the pixel's next state."></codemirror>
 		<div id='error'> {{this.error}} </div>
 		<div id='dropdown'>
-				Activation Functions: <select v-model="selected" @change="select()">
+				Activation Functions: <select v-model="selected" @change="select()" title="Select a pre-defined activation function, or write your own in the editor above.">
 				<option v-for="(activation, i) in activations "
 					v-bind:value="activation" 
 					:key="i" >

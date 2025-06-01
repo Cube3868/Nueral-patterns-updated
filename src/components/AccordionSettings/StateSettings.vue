@@ -8,9 +8,9 @@
                 {{val.title}}
         </button>
         <br>
-        <button type='button' id='empty' v-on:click="reset('empty')" title='Set all pixels to 0. Hotkey: S'>Clear</button>
+        <button type='button' id='empty' v-on:click="reset('empty')" title='Set all pixels to 0. Clears the visual pattern.'>Clear</button>
         <br>
-        Restart on randomize: <input id='reset-on-random' type='checkbox' v-model="reset_on_random">
+        Restart on randomize: <input id='reset-on-random' type='checkbox' v-model="reset_on_random" title="If checked, the canvas will be reset (according to the selected Restart Option above) whenever 'Randomize All' or 'Randomize Kernel' is used.">
     </div>
 </template>
 

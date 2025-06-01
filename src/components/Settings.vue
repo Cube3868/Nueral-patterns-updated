@@ -1,77 +1,71 @@
 <template>
-    <div>
-        <div id="settings-panel" v-show="panel_open&&!hide_settings">
-            <div id='header'>
-                <button id="min-btn" v-on:click="setOpen(false)"><i class="fa fa-minus"></i></button>
-                <button id="save-btn" v-on:click="$emit('save');setPaused(true);" v-if="!IsMobile">Save</button>
-                <button id="load-btn" v-on:click="$emit('load');setPaused(true);">Load</button>
-            </div>
-            <div id='accordion'>
-                <AccordionItem title='About'>
-                    <About/>
-                </AccordionItem>
-                <AccordionItem title='Restart Options'>
-                    <StateSettings ref='stateSettings'/>
-                </AccordionItem>
-                <AccordionItem title='Filter' :start_open=true>
-                    <FilterSettings ref='filterSettings'/>
-                </AccordionItem>
-                <AccordionItem title='Activation' :start_open=true>
-                    <ActivationSettings ref='activationSettings'/>
-                </AccordionItem>
-                <AccordionItem title='Display'> 
-                    <DisplaySettings ref='displaySettings'/>
-                </AccordionItem>
-                <AccordionItem title='Randomization Options' :start_open=false>
-                    <RandomizationSettings ref='randomizationSettings'/>
-                </AccordionItem>
-            </div>
-            <div id='footer'>
-                <button id='pause-btn' v-on:click="pauseToggle()" title='Pause/Play. Hotkey: Spacebar'>
-                    <i class="fa fa-pause" v-if=is_playing></i>
-                    <i class="fa fa-play" v-else></i>
-                </button>
-                <button id='step-btn' v-on:click="step()" v-if=!is_playing title='Step the simulation once. Hotkey: A'>
-                    <i class="fa fa-step-forward"></i>
-                </button>
-                <button id='randomize-btn' v-on:click="randomize()" title='Randomize filter and color. Hotkey: F'>Randomize</button>
-                <button id='reset-btn' v-on:click="reset()" title='Reset all pixel values as defined in Restart Options. Hotkey: D'>Restart</button>
-                <button id='randomize-all-btn' v-on:click="randomizeAll()" title='Randomize kernel, colors, symmetry, and reset type. Hotkey: R'>Randomize All</button>
-                <button id='mutate-btn' v-on:click="mutateSettings()" title='Slightly change one of the current settings.'>Mutate</button>
-                <button id='reset-defaults-btn' v-on:click="resetAllToDefaults()" title='Reset all settings to their initial defaults.'>Reset Defaults</button>
-                <button id='clear-btn' v-on:click="clearCanvas()" title='Clear the canvas. Hotkey: C'>Clear</button>
-            </div>
+    <div id='settings-panel' :class="{ 'is-hidden': hide_settings }">
+        <div id='header'>
+            <button id='hide-button' @click="hide_settings = !hide_settings" :title="hide_settings ? 'Show settings panel (V)' : 'Hide settings panel (V)'"><i class="fa" :class="hide_settings ? 'fa-eye' : 'fa-eye-slash'"></i></button>
+            Neural Patterns
         </div>
-        <div id="hotbar" v-show="!panel_open&&!hide_settings">
-            <button id='settings-btn' v-on:click="setOpen(true)">
-                <i class="fa fa-gear"></i>
-            </button>
-            <button id='pause-btn-hot' v-on:click="pauseToggle()" title='Pause/Play. Hotkey: Spacebar'>
-                <i class="fa fa-pause" v-if=is_playing></i>
-                <i class="fa fa-play" v-else></i>
-            </button>
-            <button id='randomize-btn-hot' v-on:click="randomize()" title='Randomize filter and color. Hotkey: F'>Randomize</button>
+
+        <div id='hotbar' :class="{ 'is-active': !hide_settings}">
+            <button id='play-pause-btn' v-on:click="togglePlay()" :title="is_playing ? 'Pause simulation (Space)' : 'Play simulation (Space)'"><i class='fa' :class='is_playing ? "fa-pause" : "fa-play"'></i></button>
+            <button id='step-btn' v-on:click="stepOnce()" title='Advance simulation by one step (A)'><i class='fa fa-step-forward'></i></button>
+            <button id='randomize-all-btn' v-on:click="randomizeAll()" title="Randomize all settings (R). Uses options from 'Randomization Settings'."><i class='fa fa-random'></i> Randomize</button>
+            <button id='mutate-btn' v-on:click="mutateSettings()" title='Slightly change one random current setting (M).'><i class='fa fa-flask'></i> Mutate</button>
+            <button id='reset-defaults-btn' v-on:click="resetAllToDefaults()" title='Reset all settings to their initial defaults (D).'><i class='fa fa-undo'></i> Reset</button>
+            <button id='clear-btn' v-on:click="clearCanvas()" title='Clear the canvas to background color (C).'><i class='fa fa-eraser'></i> Clear</button>
+            <button id='hide-button-inline' @click="hide_settings = !hide_settings" :title="hide_settings ? 'Show settings panel (V)' : 'Hide settings panel (V)'"><i class="fa" :class="hide_settings ? 'fa-chevron-down' : 'fa-chevron-up'"></i> {{ hide_settings ? 'Show Settings' : 'Hide Settings' }}</button>
+        </div>
+
+        <div id="main-content" v-show="!hide_settings">
+            <AccordionItem title='About' :start_open=false>
+                <About/>
+            </AccordionItem>
+
+            <AccordionItem title='State & Reset Type'>
+                <StateSettings ref='stateSettings'/>
+            </AccordionItem>
+
+            <AccordionItem title='Filter & Symmetry (Kernel)'>
+                <FilterSettings ref='filterSettings'/>
+            </AccordionItem>
+
+            <AccordionItem title='Display & Colors'> 
+                <DisplaySettings ref='displaySettings'/>
+            </AccordionItem>
+
+            <AccordionItem title='Activation Function (GLSL)'>
+                <ActivationSettings ref='activationSettings'/>
+            </AccordionItem>
+
+            <AccordionItem title='Randomization Options'>
+                <RandomizationSettings ref='randomizationSettings'/>
+            </AccordionItem>
+            
+            <AccordionItem title='Load/Save Options'>
+                <LoadSaveOptions ref='loadSaveOptions'/>
+            </AccordionItem>
+        </div>
+
+        <div id='footer' v-show="!hide_settings">
+            <div class="button-group">
+            </div>
         </div>
 
     </div>
 </template>
 
 <script>
-import Utils from '../js/utils'
-import Controller from '../js/controller'
-import IsMobile from '../js/ismobile'
-
+import Controller from '../js/controller';
 import AccordionItem from './AccordionSettings/AccordionItem'
-import About from './AccordionSettings/About'
+import About from './AccordionSettings/About.vue'
 import StateSettings from './AccordionSettings/StateSettings'
 import FilterSettings from './AccordionSettings/FilterSettings'
 import DisplaySettings from './AccordionSettings/DisplaySettings'
 import ActivationSettings from './AccordionSettings/ActivationSettings'
-import RandomizationSettings from './AccordionSettings/RandomizationSettings'
-
+import RandomizationSettings from './AccordionSettings/RandomizationSettings';
+import LoadSaveOptions from './Options/LoadOptions.vue'
 
 export default {
-    name: 'Settings',
+    name: 'SettingsPanel',
     components: {
         AccordionItem,
         About,
@@ -80,158 +74,102 @@ export default {
         DisplaySettings,
         ActivationSettings,
         RandomizationSettings,
+        LoadSaveOptions,
     },
     data() {
         return {
-            filter: Utils.randomKernel(),
-            is_playing: true,
-            panel_open: !IsMobile,
-            IsMobile: IsMobile,
-            hide_settings: false,
+            is_playing: Controller.playing,
+            hide_settings: true,
         }
     },
-    mounted() {
-        document.body.onkeyup = (e) => {
-        let focused = document.activeElement.tagName;
-        if (focused !== "INPUT" && focused !== "TEXTAREA") {
-                switch (e.key.toLowerCase()) {
-                    case(' '): {
-                        this.pauseToggle();
-                        if (focused ==="BUTTON") 
-                            e.preventDefault();
-                        break;
-                    }
-                    case('f'): {
-                        this.randomize();
-                        break;
-                    }
-                    case('r'): {
-                        this.randomizeAll();
-                        break;
-                    }
-                    case('d'): {
-                        this.$refs.stateSettings.reset();
-                        break;
-                    }
-                    case('s'): {
-                        this.$refs.stateSettings.reset('empty');
-                        break;
-                    }
-                    case('a'): {
-                        if (!this.is_playing)
-                            this.step();
-                        break;
-                    }
-                    case('v'): {
-                        this.hide_settings = !this.hide_settings;
-                        break;
-                    }
-                    case('c'): { // Hotkey for Clear Canvas
-                        this.clearCanvas();
-                        break;
-                    }
-                }
-            }
-        }
+    mounted(){
+        Controller.settingsVue = this;
     },
-    methods: {
-        pauseToggle() {
-            Controller.pauseToggle();
-            this.is_playing = !Controller.paused;
+    methods:{
+        togglePlay(){
+            Controller.togglePlay();
+            this.is_playing = Controller.playing;
         },
-        resetAllToDefaults() {
-            Controller.resetAllSettingsToDefaults();
-            this.is_playing = !Controller.paused; // Should be false after defaults
-
-            // Refresh UI of child components
-            this.$refs.filterSettings.refreshSymmetryFlagsAndInputs();
-            this.$refs.displaySettings.refreshFromController();
-            this.$refs.activationSettings.refreshFromController();
-            this.$refs.stateSettings.refreshFromController(); // Assuming/hoping StateSettings has or will have this
-            if (this.$refs.randomizationSettings) {
-                this.$refs.randomizationSettings.refreshFromController();
-            }
+        stepOnce(){
+            if (!this.is_playing)
+                Controller.step();
         },
-        randomizeAll() {
-            const randomizationOptions = this.$refs.randomizationSettings 
-                ? this.$refs.randomizationSettings.getOptions() 
-                : Controller.randomizationOptions;
-
-            Controller.randomizeAllParameters(randomizationOptions);
-            this.is_playing = !Controller.paused; // Update playing state
-            this.$refs.filterSettings.refreshSymmetryFlagsAndInputs(); // Refresh filter UI
-            this.$refs.displaySettings.refreshFromController(); // Refresh display UI
-            this.$refs.activationSettings.refreshFromController(); // Refresh activation UI
-            this.$refs.stateSettings.refreshFromController(); // Refresh state settings UI
+        randomizeAll(){
+            const options = this.$refs.randomizationSettings.getOptions();
+            Controller.randomizeAllParameters(options);
+            this.refreshAllSettingsPanels();
         },
-        setPaused(paused) {
-            Controller.setPaused(paused);
-            this.is_playing = !Controller.paused;
-        },
-        step() {
-            Controller.step();
-        },
-        randomize() {
-            this.$refs.filterSettings.randomize();
-            if (this.$refs.displaySettings.always_randomize)
-                this.$refs.displaySettings.randomize();
-            if (this.$refs.stateSettings.reset_on_random)
-                this.reset();
-        },
-        reset() {
-            this.$refs.stateSettings.reset();
-        },
-        loadConfig(config, reset) {
-            //restart options
-            this.$refs.stateSettings.persistent = config.persistent;
-            this.$refs.stateSettings.active_button = config.active_button;
-
-            //filter
-            this.$refs.filterSettings.clearSymmetry();
-            this.$refs.filterSettings.hor_sym = Boolean(config.hor_sym);
-            this.$refs.filterSettings.ver_sym = Boolean(config.ver_sym);
-            this.$refs.filterSettings.full_sym = Boolean(config.full_sym);
-            this.$refs.filterSettings.setSymmetry(2);
-            this.$refs.filterSettings.setFilter(config.filter);
-
-            //activation
-            this.$refs.activationSettings.code = config.activation;
-
-            // display settings
-            if (config.color === "random")
-                this.$refs.displaySettings.randomize();
-            else
-                this.$refs.displaySettings.setColor(config.color);
-
-            let bg_color = config.bg_color ? config.bg_color : '#000000';
-            this.$refs.displaySettings.bgColor = bg_color;
-
-            this.$refs.displaySettings.persistent = config.persistent;
-            this.$refs.displaySettings.skip_frames = config.skip_frames;
-            this.$refs.displaySettings.setSkipFrames();
-
-            Controller.load(config, reset);
-        },
-        setOpen(open) {
-            this.panel_open=open;
-        },
-        mutateSettings() {
+        mutateSettings(){
             Controller.mutateCurrentSettings();
-            // After mutation, refresh all settings panels to reflect changes
-            this.$refs.filterSettings.refreshSymmetryFlagsAndInputs();
+            this.refreshAllSettingsPanels();
+        },
+        resetAllToDefaults(){
+            Controller.resetAllSettingsToDefaults();
+            this.refreshAllSettingsPanels();
+        },
+        clearCanvas(){
+            Controller.resetState('empty'); // Clears the canvas
+        },
+        refreshAllSettingsPanels(){
+            this.$refs.filterSettings.refreshFromController();
             this.$refs.displaySettings.refreshFromController();
             this.$refs.activationSettings.refreshFromController();
             this.$refs.stateSettings.refreshFromController();
-            this.is_playing = !Controller.paused; // Ensure UI reflects playing state
+            this.$refs.randomizationSettings.refreshFromController(); // Ensure this also updates if defaults change
         },
-        clearCanvas() {
-            Controller.resetState('empty');
+        handleHotkeys(event){
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.classList.contains('CodeMirror-line')) {
+                return; // Don't trigger hotkeys if typing in an input/textarea or codemirror
+            }
+
+            switch(event.key.toLowerCase()){
+                case(' '):{ // Spacebar
+                    this.togglePlay();
+                    event.preventDefault(); // prevent page scroll
+                    break;
+                }
+                case('r'): {
+                    this.randomizeAll();
+                    break;
+                }
+                case('m'): { // Hotkey for Mutate
+                    this.mutateSettings();
+                    break;
+                }
+                case('d'): { // Hotkey for Reset Defaults
+                    this.resetAllToDefaults();
+                    break;
+                }
+                case('c'): { // Hotkey for Clear
+                    this.clearCanvas();
+                    break;
+                }
+                case('s'): { // This was for reset('empty') - now covered by 'c'
+                    // this.$refs.stateSettings.reset('empty'); // Kept for reference, but 'c' is more direct
+                    break;
+                }
+                case('a'): {
+                    if (!this.is_playing)
+                        this.stepOnce();
+                    break;
+                }
+                case('v'): {
+                    this.hide_settings = !this.hide_settings;
+                    break;
+                }
+                // Add more hotkeys here as needed
+            }
         }
-    }
+    },
+    created() {
+        window.addEventListener('keydown', this.handleHotkeys);
+    },
+    beforeDestroy() {
+        window.removeEventListener('keydown', this.handleHotkeys);
+    },
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
 #settings-panel {
@@ -245,103 +183,178 @@ export default {
     backdrop-filter: blur(18px) saturate(180%);
     -webkit-backdrop-filter: blur(18px) saturate(180%);
     border: 1px solid var(--panel-border-blur, rgba(80, 80, 80, 0.4));
-    border-radius: 12px; /* Softer, more Apple-like radius */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); /* More pronounced shadow for depth */
-    overflow: hidden;
-}
-
-#header {
+    border-radius: 12px; /* Softer, more Apple-like rounded corners */
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    overflow: hidden; /* Needed for border-radius on children and for smooth transition */
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 10px 15px;
-    height: auto;
-    /* No border or different background needed, panel blur will show through */
+    flex-direction: column;
+    max-height: calc(100vh - 40px); /* Prevent panel from being taller than viewport */
 }
 
-#header button {
-    margin-left: 10px;
-    background-color: transparent; /* Make header buttons more subtle */
-    border: none;
-    padding: 6px;
-}
-#header button:hover {
-    background-color: rgba(255,255,255,0.1);
+#settings-panel.is-hidden {
+    transform: translateY(-20px);
+    opacity: 0;
+    pointer-events: none; /* Allow clicks to pass through when hidden */
+    /* visibility: hidden; */ /* Can cause layout shifts, opacity/transform preferred */
 }
 
-
-#min-btn {
-    margin-right: auto;
-}
-
-#accordion {
-    max-height: calc(90vh - 120px); /* Adjusted for padding/header/footer */
-    overflow-y: auto;
-    padding: 0 15px 15px 15px; /* Padding around accordion items */
-}
-
-#footer {
-    padding: 12px 15px;
-    /* No border or different background, panel blur shows */
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-}
-
-#footer button {
-    flex-grow: 1; /* Allow buttons to grow and fill space */
-    background-color: var(--footer-btn-bg, rgba(60,60,60,0.7));
-}
-
-#footer button:hover {
-    background-color: var(--footer-btn-hover, rgba(75,75,75,0.8));
-}
 
 #hotbar {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 99;
-    background-color: var(--panel-bg-blur, rgba(45, 45, 45, 0.65));
-    backdrop-filter: blur(18px) saturate(180%);
-    -webkit-backdrop-filter: blur(18px) saturate(180%);
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid var(--panel-border-blur, rgba(80, 80, 80, 0.4));
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
     display: flex;
-    gap: 10px;
+    justify-content: space-around; /* Distribute buttons evenly */
+    align-items: center;
+    padding: 8px 10px;
+    background-color: var(--hotbar-bg-blur, rgba(35, 35, 35, 0.75));
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border-top: 1px solid var(--panel-border-blur, rgba(70, 70, 70, 0.3));
+    /* border-bottom: 1px solid var(--panel-border-blur, rgba(70, 70, 70, 0.3)); */
+    /* Removed bottom border for seamless look when panel open */
+    position: fixed; /* Make hotbar fixed at the top of the viewport within settings panel's influence */
+    bottom: 20px; /* Position it from the bottom */
+    left: 20px;
+    width: 360px; /* Match panel width */
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    z-index: 101; /* Above settings panel when settings are hidden */
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+/* When settings panel is SHOWN, hotbar is integrated and not fixed */
+#settings-panel:not(.is-hidden) #hotbar {
+    position: relative; /* Revert to normal flow within the panel */
+    bottom: auto;
+    left: auto;
+    width: auto; /* Let it take the panel's width */
+    border-radius: 0; /* No specific radius, it's part of the panel now */
+    box-shadow: none; /* No separate shadow */
+    border-top: none; /* No top border if it's the first visible element */
+    border-bottom: 1px solid var(--panel-border-blur, rgba(70, 70, 70, 0.3)); /* Line to separate from accordion content */
+    margin: 0; /* Remove fixed positioning margins */
+    padding: 10px; /* Standard padding */
+}
+
+
+#settings-panel.is-hidden + #hotbar {
+    /* This style might not be necessary if hotbar is always visible or part of settings-panel */
+    /* Styles for hotbar when settings are hidden, if it were a separate always-visible element */
 }
 
 #hotbar button {
-    background-color: transparent;
+    background-color: transparent; /* Make hotbar buttons more subtle */
     border: none;
-    padding: 8px;
-}
-#hotbar button:hover {
-    background-color: rgba(255,255,255,0.1);
+    color: var(--text-color-secondary, #B0B0B0);
+    padding: 6px 10px;
+    font-size: 13px;
+    border-radius: 5px;
 }
 
-/* General improvements for inputs within settings */
+#hotbar button .fa {
+    margin-right: 4px;
+}
+
+#hotbar button:hover {
+    background-color: var(--btn-hover-subtle, rgba(255,255,255,0.1));
+    color: var(--text-color-primary, #E0E0E0);
+}
+#hotbar button:active {
+    background-color: var(--btn-active-subtle, rgba(255,255,255,0.05));
+}
+
+/* Specific for the main action buttons if they remain in hotbar and need emphasis */
+#hotbar #randomize-all-btn, #hotbar #mutate-btn, #hotbar #reset-defaults-btn, #hotbar #clear-btn {
+    /* background-color: var(--btn-bg, rgba(80, 80, 80, 0.7)); */ /* Keep them distinct */
+    /* color: var(--btn-text, white); */
+    /* border: 1px solid var(--btn-border, rgba(100, 100, 100, 0.5)); */
+    /* Using transparent style like other hotbar buttons for consistency now */
+}
+
+#hotbar #hide-button-inline {
+    /* margin-left: auto; */ /* Pushes it to the right */
+}
+
+
+#header{
+    width:100%;
+    padding: 12px 15px;
+    font-size: 1.1em;
+    font-weight: 500; /* Slightly bolder header text */
+    text-align: center; /* Center title */
+    border-bottom: 1px solid var(--panel-border-blur, rgba(70,70,70,0.3));
+    /* background-color: rgba(0,0,0,0.1); */ /* Subtle header background if needed */
+    position: relative; /* For positioning the hide button */
+}
+
+#hide-button{
+    position: absolute; /* Position relative to header */
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-color-secondary, #B0B0B0);
+    font-size: 18px;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#hide-button:hover{
+    color: var(--text-color-primary, #E0E0E0);
+    background-color: var(--btn-hover-subtle, rgba(255,255,255,0.1));
+}
+
+#main-content{
+    width:100%;
+    overflow-y: auto; /* Allow content to scroll */
+    padding: 0px 15px 15px 15px; /* Padding for accordion items */
+    flex-grow: 1; /* Takes up available space */
+}
+
+#footer {
+    padding: 10px 15px;
+    border-top: 1px solid var(--panel-border-blur, rgba(70,70,70,0.3));
+    /* background-color: rgba(0,0,0,0.1); */ /* Subtle footer background if needed */
+    text-align: center; /* Center button group */
+}
+
+#footer .button-group {
+    display: flex;
+    justify-content: center; /* Center buttons within the group */
+    gap: 10px; /* Space between buttons */
+}
+
+/* General input styling (can be overridden by specific components) */
 #settings-panel input[type="text"],
 #settings-panel input[type="number"],
 #settings-panel select {
-    width: 100%; /* Simpler width */
-    padding: 10px;
-    margin-bottom: 10px;
     background-color: var(--in-bg-blur, rgba(30,30,30,0.6));
     color: var(--text-color-primary, #E0E0E0);
     border: 1px solid var(--in-border-blur, rgba(70,70,70,0.5));
-    border-radius: 8px;
-    box-sizing: border-box;
+    border-radius: 5px;
+    padding: 6px 8px;
+    margin: 2px 0;
+    font-size: 14px;
+}
+#settings-panel input[type="text"]:focus,
+#settings-panel input[type="number"]:focus,
+#settings-panel select:focus {
+    border-color: var(--in-border-focus, rgba(100, 130, 255, 0.8));
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(100, 130, 255, 0.2);
+}
+
+#settings-panel input[type="checkbox"] {
+    margin-right: 5px;
+    vertical-align: middle;
+    accent-color: var(--accent-color, #70a0ff); /* For modern checkbox color */
 }
 
 #settings-panel label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-    color: var(--text-color-secondary, #B0B0B0); /* Softer label color */
+    color: var(--text-color-secondary, #B0B0B0);
+    font-size: 14px;
+    margin-bottom: 3px;
+    display: inline-block;
 }
 
 </style>

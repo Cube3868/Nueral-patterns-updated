@@ -1,13 +1,13 @@
 <template>
     <div id="display-settings">
-        <input class='color' id='color' type='color' v-model="hexColor">
-        <label for='color'> Foreground Color</label>
+        <input class='color' id='color' type='color' v-model="hexColor" title="Select the primary color for active pixels.">
+        <label for='color' title="Select the primary color for active pixels."> Foreground Color</label>
         <br>
-        <input class='color' id='bg-color' type='color' v-model="bgColor">
-        <label for='bg-color'> Background Color</label>
+        <input class='color' id='bg-color' type='color' v-model="bgColor" title="Select the background color of the canvas.">
+        <label for='bg-color' title="Select the background color of the canvas."> Background Color</label>
         <br>
-        <label for='simulation-speed'>Simulation Speed (steps/update): </label>
-        <input id='simulation-speed' type='number' v-model.number="simulationSpeedValue" min="1" step="1" title="Number of simulation steps per visual screen update.">
+        <label for='simulation-speed' :title="simulationSpeedTooltip">Simulation Speed (steps/update): </label>
+        <input id='simulation-speed' type='number' v-model.number="simulationSpeedValue" min="1" step="1" :title="simulationSpeedTooltip">
         <br>
         <input id='persistent' type='checkbox' v-model="persistent" :title="persistent_tooltip" @change="setPersistent()">
         <label for='persistent' :title="persistent_tooltip">Persistent pixels</label>

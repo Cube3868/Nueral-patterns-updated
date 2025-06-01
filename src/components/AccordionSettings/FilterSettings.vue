@@ -11,6 +11,7 @@
                         @change="updateFilter($event, row, i)"  
                         @focus="$event.target.select()"
                         type="number"
+                        title="Convolution kernel value. Defines how a pixel's neighborhood influences its next state."
                     >
                 </td>
             </tr>

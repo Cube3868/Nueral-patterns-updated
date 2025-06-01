@@ -1,49 +1,49 @@
 <template>
     <div class="randomization-settings-container">
         <div class="setting-group">
-            <label>
+            <label title="Include the 3x3 convolution kernel values and symmetry flags (Horizontal, Vertical, Full) in the 'Randomize All' operation.">
                 <input type="checkbox" v-model="options.kernel">
                 Randomize Kernel & Symmetry
             </label>
         </div>
         <div class="setting-group">
-            <label>
+            <label title="Include the foreground color (color of active pixels) in the 'Randomize All' operation.">
                 <input type="checkbox" v-model="options.foregroundColor">
                 Randomize Foreground Color
             </label>
         </div>
         <div class="setting-group">
-            <label>
+            <label title="Include the background color of the canvas in the 'Randomize All' operation.">
                 <input type="checkbox" v-model="options.backgroundColor">
                 Randomize Background Color
             </label>
         </div>
         <div class="setting-group">
-            <label>
+            <label title="Include the 'Persistent Pixels' setting (whether pixels retain their state or reset) in the 'Randomize All' operation.">
                 <input type="checkbox" v-model="options.persistentPixels">
                 Randomize Persistent Pixels
             </label>
         </div>
         <div class="setting-group">
-            <label>
+            <label title="Include the simulation speed (steps per visual update) in the 'Randomize All' operation.">
                 <input type="checkbox" v-model="options.simulationSpeed">
                 Randomize Simulation Speed
             </label>
         </div>
         <div class="setting-group">
-            <label>
+            <label title="Include the GLSL activation function in the 'Randomize All' operation.">
                 <input type="checkbox" v-model="options.activationFunction">
                 Randomize Activation Function
             </label>
         </div>
         <div class="setting-group">
-            <label>
+            <label title="Include the Reset Type (e.g., Random Floats, Center) in the 'Randomize All' operation.">
                 <input type="checkbox" v-model="options.resetType">
                 Randomize Reset Type
             </label>
         </div>
         <div class="setting-group">
-            <label>
+            <label title="Include the Zoom Level in the 'Randomize All' operation.">
                 <input type="checkbox" v-model="options.zoomLevel">
                 Randomize Zoom Level
             </label>
