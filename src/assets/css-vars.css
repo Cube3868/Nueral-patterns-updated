@@ -1,0 +1,33 @@
+:root {
+    /* bg means background */
+    --panel-bg: rgba(45, 45, 45, 0.65); /* Dark, semi-transparent for panel */
+    --panel-border: rgba(80, 80, 80, 0.4); /* Softer border for panel */
+    --btn-bg: rgba(80, 80, 80, 0.7); /* Semi-transparent gray for buttons */
+    --btn-hover: rgba(95, 95, 95, 0.8); /* Slightly lighter hover for buttons */
+    --btn-active: rgba(70, 70, 70, 0.9); /* Slightly darker active for buttons */
+    --in-bg: rgba(50, 50, 50, 0.7); /* Semi-transparent gray for inputs */
+    --in-border: rgba(80, 80, 80, 0.5); /* Softer border for inputs */
+    --in-border-hover: rgba(100, 100, 100, 0.7); /* Slightly lighter border on hover for inputs */
+
+    /* Text colors (added for better theme control) */
+    --text-color-primary: #E0E0E0;
+    --text-color-secondary: #B0B0B0;
+
+    /* Button specific text colors (if needed, otherwise they'll inherit) */
+    --btn-text: white;
+
+    /* Selected states for buttons (like in StateSettings) */
+    --btn-selected-bg: rgba(100, 100, 100, 0.85);
+    --btn-selected-hover-bg: rgba(115, 115, 115, 0.9);
+    --btn-selected-active-bg: rgba(90, 90, 90, 0.95);
+    --btn-selected-border: rgba(130, 130, 130, 0.9);
+
+    /* Accordion specific styles */
+    --accordion-item-bg: rgba(60, 60, 60, 0.5);
+    --accordion-title-box-bg: rgba(70, 70, 70, 0.55);
+    --accordion-title-box-hover: rgba(85, 85, 85, 0.65);
+    --accordion-title-text: #D0D0D0;
+
+    /* Main background for html, body */
+    --bg-main: black;
+}

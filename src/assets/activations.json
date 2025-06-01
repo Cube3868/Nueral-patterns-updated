@@ -1,0 +1,38 @@
+[
+    {
+        "name" : "Identity (default)",
+        "code" : "float activation(float x) {\n  return x;\n}"
+    },
+    {
+        "name" : "sin",
+        "code" : "float activation(float x) {\n  return sin(x);\n}"
+    },
+    {
+        "name" : "power",
+        "code" : "float activation(float x) {\n  return pow(x, 2.);\n}"
+    },
+    {
+        "name" : "absolute value",
+        "code" : "float activation(float x) {\n  return abs(x);\n}"
+    },
+    {
+        "name" : "tanh",
+        "code" : "float activation(float x) {\n  return (exp(2.*x)-1.)/(exp(2.*x)+1.);\n}"
+    },
+    {
+        "name" : "inverse gaussian",
+        "code" : "float activation(float x) {\n  return -1./pow(2., (pow(x, 2.)))+1.;\n}"
+    },
+    {
+        "name" : "Sin (Scaled by PI)",
+        "code" : "float activation(float x) {\n  return sin(x * 3.1415926535);\n}"
+    },
+    {
+        "name" : "Step (0.0 threshold)",
+        "code" : "float activation(float x) {\n  return step(0.0, x);\n}"
+    },
+    {
+        "name" : "Smoothstep (-0.5 to 0.5)",
+        "code" : "float activation(float x) {\n  return smoothstep(-0.5, 0.5, x);\n}"
+    }
+]
