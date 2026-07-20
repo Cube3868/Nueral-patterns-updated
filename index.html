@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0d0c" />
+  <title>Neural CA Garden</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <div class="eyebrow">Growing Neural Cellular Automata</div>
+        <h1>Neural CA Garden</h1>
+        <p class="lede">One shared microscopic neural rule grows this organism from a single cell. Injure it with your mouse and watch the cells attempt to rebuild the whole.</p>
+      </div>
+      <div class="badge">Runs entirely in your browser</div>
+    </header>
+
+    <div class="layout">
+      <section class="stage-card">
+        <div class="canvas-wrap" id="canvasWrap">
+          <canvas id="view" width="720" height="720" aria-label="Neural cellular automaton"></canvas>
+          <div class="canvas-hint">click or drag to damage</div>
+        </div>
+      </section>
+
+      <aside class="right">
+        <section class="panel">
+          <h2>Experiment</h2>
+          <div class="button-grid">
+            <button class="primary" id="play">Pause</button>
+            <button id="step">Single step</button>
+            <button id="reset">Reset seed</button>
+            <button class="danger" id="damage">Punch a hole</button>
+            <button class="wide" id="burst">Grow 100 steps</button>
+          </div>
+
+          <div class="control">
+            <div class="label-row"><label for="speed">Steps per frame</label><output id="speedOut">2</output></div>
+            <input id="speed" type="range" min="1" max="12" value="2" step="1" />
+          </div>
+          <div class="control">
+            <div class="label-row"><label for="fire">Cell update chance</label><output id="fireOut">50%</output></div>
+            <input id="fire" type="range" min="5" max="100" value="50" step="5" />
+          </div>
+          <div class="control">
+            <div class="label-row"><label for="radius">Damage radius</label><output id="radiusOut">5 cells</output></div>
+            <input id="radius" type="range" min="1" max="12" value="5" step="1" />
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>View</h2>
+          <select id="viewMode" aria-label="Visualization mode">
+            <option value="rgba">Color organism</option>
+            <option value="alpha">Living-cell alpha</option>
+            <option value="hidden:4">Hidden channel 1</option>
+            <option value="hidden:5">Hidden channel 2</option>
+            <option value="hidden:6">Hidden channel 3</option>
+            <option value="hidden:7">Hidden channel 4</option>
+            <option value="hidden:8">Hidden channel 5</option>
+            <option value="hidden:9">Hidden channel 6</option>
+            <option value="hidden:10">Hidden channel 7</option>
+            <option value="hidden:11">Hidden channel 8</option>
+            <option value="hidden:12">Hidden channel 9</option>
+            <option value="hidden:13">Hidden channel 10</option>
+            <option value="hidden:14">Hidden channel 11</option>
+            <option value="hidden:15">Hidden channel 12</option>
+          </select>
+          <label class="check"><input id="ghost" type="checkbox" /> Show learned target ghost</label>
+          <label class="check"><input id="autoDamage" type="checkbox" /> Random injury every 350 steps</label>
+        </section>
+
+        <section class="panel">
+          <h2>Telemetry</h2>
+          <div class="stats">
+            <div class="stat"><span>CA steps</span><strong id="stepsStat">0</strong></div>
+            <div class="stat"><span>Render FPS</span><strong id="fpsStat">—</strong></div>
+            <div class="stat"><span>Grid</span><strong id="gridStat">—</strong></div>
+            <div class="stat"><span>Training</span><strong id="trainStat">—</strong></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>What you’re touching</h2>
+          <p class="note">Each pixel carries 16 values: RGBA plus 12 hidden signals. Every cell sees only its 3×3 neighborhood and uses the same tiny neural network. There is no master blueprint sitting anywhere in the grid.</p>
+          <p class="note" style="margin-top:10px"><span class="kbd">Space</span> play/pause · <span class="kbd">R</span> reset · <span class="kbd">D</span> damage</p>
+        </section>
+      </aside>
+    </div>
+    <footer>Built from the Growing Neural Cellular Automata idea by Mordvintsev, Randazzo, Niklasson, and Levin.</footer>
+  </main>
+
+
+  <script src="model-1.js"></script>
+  <script src="model-2.js"></script>
+  <script src="model-3.js"></script>
+  <script src="model-4.js"></script>
+  <script src="model-5.js"></script>
+  <script src="model-6.js"></script>
+  <script src="model-7.js"></script>
+  <script src="model-8.js"></script>
+  <script src="model-9.js"></script>
+  <script src="model-10.js"></script>
+  <script src="model-11.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
